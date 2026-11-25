@@ -1,3 +1,24 @@
+import streamlit as st
+import streamlit.components.v1 as components
+
+st.set_page_config(
+    page_title="액터스 룸 - 비대면 셀프 테이프 촬영 & 감독 피드백",
+    page_icon="🎬",
+    layout="centered"
+)
+
+# Streamlit 기본 여백 제거 스타일
+st.markdown("""
+    <style>
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        max-width: 720px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+html_code = """
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -485,7 +506,7 @@
     </div>
   </header>
 
-  <!-- STEP 1: 작품 선택 (drama_name 리스트 기반) -->
+  <!-- STEP 1: 작품 선택 -->
   <section id="step-1" class="step-section active">
     <div class="section-header">
       <h2>1. 작품 선택</h2>
@@ -606,7 +627,7 @@
     </div>
   </section>
 
-  <!-- STEP 5: 감독 전송 & 커트라인 판정(if 조건문) & 재촬영 버튼 생성(for 반복문) -->
+  <!-- STEP 5: 감독 전송 & 커트라인 판정 & 재촬영 버튼 생성 -->
   <section id="step-5" class="step-section">
     <h2>🎬 감독 심사 및 피드백</h2>
     <p id="director-role-cutline-info" class="desc"></p>
@@ -639,7 +660,7 @@
           <div id="saved-director-comment" style="font-size: 0.95rem; line-height: 1.5;"></div>
         </div>
         
-        <!-- 통과 버튼 또는 for 반복문으로 생성된 재촬영 버튼들이 들어가는 영역 -->
+        <!-- 통과 버튼 또는 재촬영 버튼들이 들어가는 영역 -->
         <div id="verdict-actions" class="btn-group"></div>
       </div>
     </div>
@@ -647,7 +668,6 @@
 </div>
 
 <script>
-  // 작품별 주요 인물, 감독 설정 커트라인(cutline), 대사 데이터
   const defaultScriptData = {
     "이 사랑 통역 되나요?": {
       genre: "로맨틱 코미디",
@@ -694,4 +714,473 @@
           cutline: 90,
           lines: [
             { situation: "총을 겨누며 흔들림 없는 단호한 눈빛으로", text: "나는 불꽃으로 살다 죽을 것이오. 그러니 걱정 마시오, 동지. 그대는 그대의 길을 가시오." },
-            { situation: "유진에게 한글을 배우며 순수하고 조심스럽게", text: "그대의 나라 말로 '러브'가 무엇이오? 총을 쏘는 것보다 어렵
+            { situation: "유진에게 한글을 배우며 순수하고 조심스럽게", text: "그대의 나라 말로 '러브'가 무엇이오? 총을 쏘는 것보다 어렵소? 나도 한 번 해보려 하오." },
+            { situation: "유진과의 이별을 예감하며 눈물을 삼키고", text: "잘 가시오, 유진. 그대가 있어 나의 조선은 조금 더 버틸 수 있었소. 부디 무사하시오." }
+          ]
+        },
+        "유진 초이 (미 해병대 장교)": {
+          cutline: 90,
+          lines: [
+            { situation: "애신에게 정체를 들킨 후, 낮고 단호한 목소리로", text: "합시다, 러브. 나랑 같이. 나는 그대가 뭘 하든, 그대가 가는 길에 함께 가려 하오." },
+            { situation: "노비 출신으로서 겪었던 아픔을 떠올리며 씁쓸하게", text: "귀하의 조선은, 내게 한 번도 내어준 적이 없소. 허나 귀하가 지킨다면 나도 지킬 것이오." },
+            { situation: "기차 안에서 애신을 떠나보내며 마지막 인사를 건네듯", text: "그대는 나아가시오. 나는 한 걸음 물러나니. 이것이 내가 그대를 사랑하는 방식이오." }
+          ]
+        },
+        "김희성 (애신의 정혼자 / 언론인)": {
+          cutline: 90,
+          lines: [
+            { situation: "장난스러운 미소 뒤에 깊은 슬픔을 감추며", text: "나는 무용한 것들을 좋아하오. 달, 별, 꽃, 바람, 웃음, 농담... 그리고 그대." },
+            { situation: "애신의 비밀을 알게 된 후, 그녀를 보호하려 진지하게", text: "그대가 위험한 불꽃이라면, 나는 그 불꽃이 꺼지지 않게 바람을 막아주는 바람막이가 되어주겠소." },
+            { situation: "신문사를 운영하며 펜으로 싸우기로 결심한 뒤", text: "총을 들 용기는 없으나, 기록할 용기는 있소. 이 나라가 어떻게 무너지고 어떻게 싸웠는지 내가 똑똑히 쓸 것이오." }
+          ]
+        },
+        "구동매 (무신회 한성지부장)": {
+          cutline: 90,
+          lines: [
+            { situation: "애신의 치맛자락을 잡았던 과거를 떠올리며 처연하게", text: "애기씨, 그날 제가 잡은 건 애기씨의 치맛자락이 아니라 제 목숨줄이었습니다." },
+            { situation: "칼을 뽑아 들며 서늘하고 살기 어린 목소리로", text: "날 죽이러 온 거면 제대로 베어라. 어설프게 찌르면 네놈 목이 먼저 날아갈 테니." },
+            { situation: "애신을 향한 지독한 연모와 증오가 뒤섞인 채", text: "애기씨가 죽으면 나도 죽습니다. 그러니 애기씨는 무슨 일이 있어도 살아남으셔야 합니다. 그게 내 유일한 숨통이니까." }
+          ]
+        }
+      }
+    },
+    "100일의 거짓말": {
+      genre: "첩보 / 로맨스",
+      roles: {
+        "소매치기 (밀정 제안받은 주인공)": {
+          cutline: 90,
+          lines: [
+            { situation: "총독부 잠입 제안을 받고 비웃듯", text: "내 손기술이 필요한 건 알겠는데, 목숨값치고는 조건이 너무 짠 거 아닙니까?" },
+            { situation: "거짓말이 들통날 위기에서 태연하게 연기하며", text: "제가 훔친 건 서류가 아니라, 나리께서 잃어버리신 양심입니다." }
+          ]
+        },
+        "통역관 (총독부 엘리트)": {
+          cutline: 90,
+          lines: [
+            { situation: "주인공의 정체를 의심하며 날카롭게", text: "거짓말을 하려면 눈빛부터 속이셔야죠. 지금 당신 눈은 모든 걸 말하고 있습니다." },
+            { situation: "비밀을 공유한 뒤 낮게 속삭이며", text: "오늘부터 백일 동안, 당신의 모든 말은 내가 통역합니다. 실수하지 마세요." }
+          ]
+        }
+      }
+    }
+  };
+
+  let scriptData = JSON.parse(localStorage.getItem("actorsRoomVideoData")) || JSON.parse(JSON.stringify(defaultScriptData));
+  let drama_name = Object.keys(scriptData);
+
+  let currentWork = "";
+  let currentRole = "";
+  let currentLineObj = null;
+  let selectedBgmUrl = "";
+  let selectedBgmTitle = "";
+
+  let cameraStream = null;
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recordedVideoUrl = "";
+  let recognition = null;
+  let finalTranscript = "";
+  let calculatedAccuracy = 0;
+
+  function goToStep(stepNum) {
+    document.querySelectorAll(".step-section").forEach(sec => sec.classList.remove("active"));
+    document.getElementById(`step-${stepNum}`).classList.add("active");
+  }
+
+  function saveData() {
+    localStorage.setItem("actorsRoomVideoData", JSON.stringify(scriptData));
+    drama_name = Object.keys(scriptData);
+  }
+
+  function resetData() {
+    if (confirm("기본 작품 및 배역별 커트라인 데이터로 초기화할까요?")) {
+      scriptData = JSON.parse(JSON.stringify(defaultScriptData));
+      saveData();
+      stopCameraStream();
+      goToStep(1);
+      renderWorks();
+    }
+  }
+
+  function toggleForm(formId) {
+    document.getElementById(formId).classList.toggle("open");
+  }
+
+  function renderWorks() {
+    const workListEl = document.getElementById("work-list");
+    workListEl.innerHTML = "";
+    drama_name = Object.keys(scriptData);
+
+    drama_name.forEach(work => {
+      const card = document.createElement("div");
+      card.className = "select-card";
+      card.innerHTML = `
+        <div class="card-content" onclick="selectWork('${work.replace(/'/g, "\\'")}')">
+          <div class="card-title">${work}</div>
+          <div class="card-sub">${scriptData[work].genre || "장르 미지정"}</div>
+        </div>
+        <button class="btn-delete" onclick="deleteWork('${work.replace(/'/g, "\\'")}')">✕</button>
+      `;
+      workListEl.appendChild(card);
+    });
+  }
+
+  function addWork() {
+    const title = document.getElementById("new-work-title").value.trim();
+    const genre = document.getElementById("new-work-genre").value.trim() || "사용자 등록 작품";
+    if (!title) return alert("작품 제목을 입력해 주세요.");
+    if (scriptData[title]) return alert("이미 등록된 작품입니다.");
+    scriptData[title] = { genre, roles: {} };
+    saveData();
+    document.getElementById("new-work-title").value = "";
+    document.getElementById("new-work-genre").value = "";
+    toggleForm("work-form");
+    renderWorks();
+  }
+
+  function deleteWork(work) {
+    if (confirm(`'${work}' 작품을 삭제하시겠습니까?`)) {
+      delete scriptData[work];
+      saveData();
+      renderWorks();
+    }
+  }
+
+  function selectWork(work) {
+    currentWork = work;
+    document.getElementById("selected-work-title").innerText = `선택된 작품: ${work}`;
+    renderRoles();
+    goToStep(2);
+  }
+
+  function renderRoles() {
+    const roleListEl = document.getElementById("role-list");
+    roleListEl.innerHTML = "";
+    const roles = scriptData[currentWork].roles;
+    Object.keys(roles).forEach(role => {
+      const roleData = roles[role];
+      const cutline = roleData.cutline || 90;
+      const lineCount = roleData.lines ? roleData.lines.length : 0;
+
+      const card = document.createElement("div");
+      card.className = "select-card";
+      card.innerHTML = `
+        <div class="card-content" onclick="selectRole('${role.replace(/'/g, "\\'")}')">
+          <div class="card-title">
+            ${role}
+            <span class="cutline-badge">커트라인 ${cutline}%</span>
+          </div>
+          <div class="card-sub">대사 ${lineCount}개 수록</div>
+        </div>
+        <button class="btn-delete" onclick="deleteRole('${role.replace(/'/g, "\\'")}')">✕</button>
+      `;
+      roleListEl.appendChild(card);
+    });
+  }
+
+  function addRole() {
+    const roleName = document.getElementById("new-role-name").value.trim();
+    const cutlineVal = parseInt(document.getElementById("new-role-cutline").value, 10) || 90;
+    if (!roleName) return alert("배역 이름을 입력해 주세요.");
+    scriptData[currentWork].roles[roleName] = {
+      cutline: Math.min(100, Math.max(50, cutlineVal)),
+      lines: []
+    };
+    saveData();
+    document.getElementById("new-role-name").value = "";
+    toggleForm("role-form");
+    renderRoles();
+  }
+
+  function deleteRole(role) {
+    if (confirm(`'${role}' 배역을 삭제하시겠습니까?`)) {
+      delete scriptData[currentWork].roles[role];
+      saveData();
+      renderRoles();
+    }
+  }
+
+  function selectRole(role) {
+    currentRole = role;
+    const cutline = scriptData[currentWork].roles[role].cutline || 90;
+    document.getElementById("selected-role-title").innerText = `${currentWork} - ${role} (감독 커트라인: ${cutline}%)`;
+    renderLines();
+    goToStep(3);
+  }
+
+  function renderLines() {
+    const lineListEl = document.getElementById("line-list");
+    lineListEl.innerHTML = "";
+    const lines = scriptData[currentWork].roles[currentRole].lines;
+    lines.forEach((lineObj, index) => {
+      const card = document.createElement("div");
+      card.className = "select-card";
+      card.innerHTML = `
+        <div class="card-content" onclick="preparePractice(${index})">
+          <div class="card-sub" style="color: #ff6b6b; margin-bottom: 4px;">#${index + 1} ${lineObj.situation}</div>
+          <div class="card-title" style="font-size: 0.95rem; font-weight: 400;">"${lineObj.text}"</div>
+        </div>
+        <button class="btn-delete" onclick="deleteLine(${index})">✕</button>
+      `;
+      lineListEl.appendChild(card);
+    });
+  }
+
+  function addLine() {
+    const situation = document.getElementById("new-line-situation").value.trim() || "상황 설명 없음";
+    const text = document.getElementById("new-line-text").value.trim();
+    if (!text) return alert("대사 내용을 입력해 주세요.");
+    scriptData[currentWork].roles[currentRole].lines.push({ situation, text });
+    saveData();
+    document.getElementById("new-line-situation").value = "";
+    document.getElementById("new-line-text").value = "";
+    toggleForm("line-form");
+    renderLines();
+  }
+
+  function deleteLine(index) {
+    if (confirm("이 대사를 삭제하시겠습니까?")) {
+      scriptData[currentWork].roles[currentRole].lines.splice(index, 1);
+      saveData();
+      renderLines();
+    }
+  }
+
+  async function preparePractice(index) {
+    currentLineObj = scriptData[currentWork].roles[currentRole].lines[index];
+    const cutline = scriptData[currentWork].roles[currentRole].cutline || 90;
+    
+    const bgmSelect = document.getElementById("bgm-select");
+    selectedBgmUrl = bgmSelect.value;
+    selectedBgmTitle = bgmSelect.options[bgmSelect.selectedIndex].getAttribute("data-title");
+
+    document.getElementById("practice-info").innerText = `${currentWork} | ${currentRole} (목표 커트라인: ${cutline}%)`;
+    document.getElementById("practice-situation").innerText = currentLineObj.situation;
+    document.getElementById("practice-line").innerText = `"${currentLineObj.text}"`;
+
+    const bgmBox = document.getElementById("practice-bgm-box");
+    const bgmPlayer = document.getElementById("practice-bgm-player");
+    if (selectedBgmUrl) {
+      bgmBox.style.display = "flex";
+      document.getElementById("selected-bgm-name").innerText = `🎵 ${selectedBgmTitle}`;
+      bgmPlayer.src = selectedBgmUrl;
+      bgmPlayer.play().catch(() => {});
+    } else {
+      bgmBox.style.display = "none";
+      bgmPlayer.pause();
+      bgmPlayer.src = "";
+    }
+
+    goToStep(4);
+    await initCameraPreview();
+  }
+
+  async function initCameraPreview() {
+    resetRecordingUI();
+    try {
+      stopCameraStream();
+      cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const liveVideo = document.getElementById("live-camera-preview");
+      liveVideo.srcObject = cameraStream;
+      liveVideo.style.display = "block";
+      document.getElementById("recorded-video-player").style.display = "none";
+      document.getElementById("rec-status").innerText = "카메라 준비 완료 (촬영 시작을 눌러주세요)";
+    } catch (err) {
+      alert("카메라 및 마이크 접근 권한이 필요합니다. 브라우저 설정에서 허용해 주세요.");
+      console.error(err);
+    }
+  }
+
+  function stopCameraStream() {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+      cameraStream = null;
+    }
+  }
+
+  function exitCameraAndBack() {
+    stopCameraStream();
+    const bgmPlayer = document.getElementById("practice-bgm-player");
+    if (bgmPlayer) bgmPlayer.pause();
+    goToStep(3);
+  }
+
+  function resetRecordingUI() {
+    document.getElementById("rec-dot").classList.remove("recording");
+    document.getElementById("btn-start-rec").disabled = false;
+    document.getElementById("btn-stop-rec").disabled = true;
+    document.getElementById("live-camera-preview").style.display = "block";
+    document.getElementById("recorded-video-player").style.display = "none";
+    document.getElementById("recognized-text-box").style.display = "none";
+    document.getElementById("btn-send-director").style.display = "none";
+    finalTranscript = "";
+  }
+
+  async function startVideoRecording() {
+    if (!cameraStream) {
+      await initCameraPreview();
+      if (!cameraStream) return;
+    }
+
+    const bgmPlayer = document.getElementById("practice-bgm-player");
+    if (selectedBgmUrl && bgmPlayer.paused) {
+      bgmPlayer.currentTime = 0;
+      await bgmPlayer.play().catch(() => {});
+    }
+
+    recordedChunks = [];
+    finalTranscript = "";
+    mediaRecorder = new MediaRecorder(cameraStream);
+
+    mediaRecorder.ondataavailable = event => {
+      if (event.data.size > 0) recordedChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+      recordedVideoUrl = URL.createObjectURL(videoBlob);
+      
+      document.getElementById("live-camera-preview").style.display = "none";
+      const recordedPlayer = document.getElementById("recorded-video-player");
+      recordedPlayer.src = recordedVideoUrl;
+      recordedPlayer.style.display = "block";
+
+      if (selectedBgmUrl) bgmPlayer.pause();
+
+      const displaySpeech = finalTranscript.trim() || "(음성 인식 텍스트 없음 - 영상 촬영 완료)";
+      document.getElementById("recognized-result").innerText = displaySpeech;
+      document.getElementById("recognized-text-box").style.display = "block";
+      document.getElementById("btn-send-director").style.display = "block";
+    };
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = "ko-KR";
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onresult = event => {
+        let interim = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript + " ";
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+      };
+      recognition.start();
+    }
+
+    mediaRecorder.start();
+    document.getElementById("rec-dot").classList.add("recording");
+    document.getElementById("rec-status").innerText = "REC 촬영 중...";
+    document.getElementById("btn-start-rec").disabled = true;
+    document.getElementById("btn-stop-rec").disabled = false;
+    document.getElementById("recognized-text-box").style.display = "none";
+    document.getElementById("btn-send-director").style.display = "none";
+  }
+
+  function stopVideoRecording() {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
+    if (recognition) {
+      recognition.stop();
+    }
+    document.getElementById("rec-dot").classList.remove("recording");
+    document.getElementById("rec-status").innerText = "촬영 완료 (미리보기 확인)";
+    document.getElementById("btn-start-rec").disabled = false;
+    document.getElementById("btn-stop-rec").disabled = true;
+  }
+
+  // 대사 정확도 계산 함수
+  function calculateAccuracy(original, spoken) {
+    const cleanOrig = original.replace(/[^가-힣a-zA-Z0-9]/g, "");
+    const cleanSpoken = spoken.replace(/[^가-힣a-zA-Z0-9]/g, "");
+    if (!cleanSpoken) return 75; // 음성 인식이 안 된 경우 기본 연기 점수
+
+    let matchCount = 0;
+    const origChars = cleanOrig.split("");
+    const spokenChars = cleanSpoken.split("");
+
+    origChars.forEach(ch => {
+      const idx = spokenChars.indexOf(ch);
+      if (idx !== -1) {
+        matchCount++;
+        spokenChars.splice(idx, 1);
+      }
+    });
+
+    return Math.min(100, Math.round((matchCount / origChars.length) * 100));
+  }
+
+  // 5단계: 감독에게 전송
+  function sendToDirector() {
+    stopCameraStream();
+    const cutline = scriptData[currentWork].roles[currentRole].cutline || 90;
+    calculatedAccuracy = calculateAccuracy(currentLineObj.text, finalTranscript);
+
+    document.getElementById("director-role-cutline-info").innerText = `${currentWork} | ${currentRole} (합격 커트라인: ${cutline}%)`;
+    document.getElementById("director-video-player").src = recordedVideoUrl;
+
+    const scoreEl = document.getElementById("accuracy-score");
+    scoreEl.innerText = `${calculatedAccuracy}%`;
+    scoreEl.className = "score-number " + (calculatedAccuracy >= cutline ? "score-pass" : "score-fail");
+
+    document.getElementById("accuracy-detail").innerText = `원본 대사 대비 정확도 및 호흡 분석 결과 (기준: ${cutline}%)`;
+    document.getElementById("director-comment-input").value = "";
+    document.getElementById("final-verdict-area").style.display = "none";
+
+    goToStep(5);
+  }
+
+  // 감독 코멘트 등록 및 판정
+  function handleDirectorSubmit() {
+    const comment = document.getElementById("director-comment-input").value.trim() || "수고하셨습니다.";
+    const cutline = scriptData[currentWork].roles[currentRole].cutline || 90;
+    const verdictArea = document.getElementById("final-verdict-area");
+    const banner = document.getElementById("verdict-banner");
+    const actionsEl = document.getElementById("verdict-actions");
+
+    document.getElementById("saved-director-comment").innerText = comment;
+    actionsEl.innerHTML = "";
+
+    if (calculatedAccuracy >= cutline) {
+      banner.className = "result-banner banner-pass";
+      banner.innerText = `🎉 오디션 합격! (커트라인 ${cutline}% 통과)`;
+
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "btn btn-success";
+      nextBtn.innerText = "다른 대사 연습하기";
+      nextBtn.onclick = () => goToStep(3);
+      actionsEl.appendChild(nextBtn);
+    } else {
+      banner.className = "result-banner banner-fail";
+      banner.innerText = `⚠️ 커트라인 미달 (${calculatedAccuracy}% / 목표 ${cutline}%) - 재촬영 필요`;
+
+      const retryLabels = ["감정선 보완 재촬영", "발음/호흡 교정 재촬영"];
+      for (let i = 0; i < retryLabels.length; i++) {
+        const retryBtn = document.createElement("button");
+        retryBtn.className = "btn btn-primary";
+        retryBtn.innerText = `🔄 ${retryLabels[i]}`;
+        retryBtn.onclick = async () => {
+          goToStep(4);
+          await initCameraPreview();
+        };
+        actionsEl.appendChild(retryBtn);
+      }
+    }
+
+    verdictArea.style.display = "flex";
+  }
+
+  renderWorks();
+</script>
+</body>
+</html>
+"""
+
+components.html(html_code, height=950, scrolling=True)
+ 
